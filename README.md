@@ -6,7 +6,7 @@ A collection of functional style functions operate on table array
 ```
 local pfa = require "pointfree_array"
 local arr = pfa.Pointfree({1, 2, 3, 4, 5, 6, 7, 8})
-local squareOfOddNumbers = arr:filter(function(n) return n % 2 == 1 end):map(function(n) return n*n end)
+local square_odd_num = arr:filter(function(n) return n % 2 == 1 end):map(function(n) return n*n end)
 ```
 This will output: {1, 9, 25, 49}
 
