@@ -6,7 +6,7 @@ pointfree_array._VERSION = 0.1
 --]=====]
 
 
-function pointfree_array.map(f, arr)
+function pointfree_array.map(arr, f)
   local newarr = pointfree_array.Pointfree({})
   for i, v in ipairs(arr) do
     table.insert(newarr, f(v))
@@ -15,7 +15,7 @@ function pointfree_array.map(f, arr)
 end
 
 
-function pointfree_array.apply(f, arr)
+function pointfree_array.apply(arr, f)
   for i, v in ipairs(arr) do
     f(v)
   end
@@ -33,7 +33,7 @@ function pointfree_array.flatten(arr)
 end
 
 
-function pointfree_array.filter(p, arr)
+function pointfree_array.filter(arr, f)
   local newarr = pointfree_array.Pointfree({})
   for _, v in ipairs(arr) do
     if p(v) then
@@ -45,28 +45,16 @@ end
 
 
 function pointfree_array.shuffle(arr)
-  local counter = #arr
-  local arr_len = #arr
-  while counter > 1 do
-    local index = math.floor(util.rand()*arr_len) + 1
-    swap(array, index, counter)
-    counter = counter - 1
+  local size = #arr
+  for i = size, 1, -1 do
+    local rand = math.random(size)
+    arr[i], arr[rand] = arr[rand], arr[i]
   end
   return pointfree_array.Pointfree(arr)
 end
 
 
-function pointfree_array.elem(val, arr)
-  for _, value in ipairs(arr) do
-    if value == val then
-      return true
-    end
-  end
-  return false
-end
-
-
-function pointfree_array.tail(num, arr)
+function pointfree_array.tail(arr)
   local newarr = pointfree_array.Pointfree({})
   for k, v in ipairs(arr) do
     if k ~= 1 then
@@ -76,7 +64,7 @@ function pointfree_array.tail(num, arr)
   return newarr
 end
 
-function pointfree_array.init(num, arr)
+function pointfree_array.init(arr)
   local newarr = pointfree_array.Pointfree({})
   local arr_len = #arr
   for k, v in ipairs(arr) do
@@ -88,7 +76,7 @@ function pointfree_array.init(num, arr)
 end
 
 
-function pointfree_array.take(num, arr)
+function pointfree_array.take(arr, num)
   local count = 0
   local newarr = pointfree_array.Pointfree({})
   for _, v in ipairs(arr) do
@@ -102,7 +90,7 @@ function pointfree_array.take(num, arr)
 end
 
 
-function pointfree_array.takeWhile(p, arr)
+function pointfree_array.takeWhile(arr, p)
   -- Takes longest prefix of elements of 'list' that satisfy 'predicate'.
   local newarr = pointfree_array.Pointfree({})
   for _, v in ipairs(arr) do
@@ -116,7 +104,7 @@ function pointfree_array.takeWhile(p, arr)
 end
 
 
-function pointfree_array.drop(num, arr)
+function pointfree_array.drop(arr, num)
   local count = 0
   local newarr = pointfree_array.Pointfree({})
   for _, v in ipairs(arr) do
@@ -129,7 +117,7 @@ function pointfree_array.drop(num, arr)
 end
 
 
-function pointfree_array.dropWhile(p, arr)
+function pointfree_array.dropWhile(arr, p)
   local newarr = pointfree_array.Pointfree({})
   local b_finish = false
   for _, v in ipairs(arr) do
@@ -176,13 +164,24 @@ function pointfree_array.reverse(arr)
 end
 
 
-function pointfree_array.any(p, arr)
-  return _or (pointfree_array.map(p, arr))
+-- hereafter, not return pointfree style array
+function pointfree_array.elem(arr, val)
+  for _, value in ipairs(arr) do
+    if value == val then
+      return true
+    end
+  end
+  return false
 end
 
 
-function pointfree_array.all(p, arr)
-  return _and(pointfree_array.map(p, arr))
+function pointfree_array.any(arr, p)
+  return _or (pointfree_array.map(arr, p))
+end
+
+
+function pointfree_array.all(arr, p)
+  return _and(pointfree_array.map(arr, p))
 end
 
 
@@ -190,7 +189,6 @@ function pointfree_array.un_pointfree(arr)
   setmetatable(arr, nil)
   return arr
 end
-
 
 local Pointfree  = {
   -- return functional table
