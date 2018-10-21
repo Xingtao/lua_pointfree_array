@@ -1,5 +1,5 @@
 # lua_pointfree_array
-A collection of functional style functions operate on table array
+Functional style functions operate on table array
 
 ## Usage
 ####
